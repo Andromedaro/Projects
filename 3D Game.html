@@ -1,0 +1,149 @@
+//See how one can use mathematics to make the appearance of 3D graphics!
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="300" height="300" style="border:1px solid #000000;"></canvas>
+
+<script>
+score = 0;
+var started = 0;
+var X = -70;
+var Y = 0;
+var Z = 0;
+var DB = new DangerBlock(300*Math.random()-210);
+var DB2 = new DangerBlock(300*Math.random()-210);
+function Move(a,b,c){
+X=X+a;
+Y=Y+b;
+Z=Z-c;
+}
+function KeyMove(k){
+if (k == 'w'){Move(0,0,7)};
+if (k == 's'){Move(0,0,-7)};
+if (k == 'a'){Move(-7,0,0)};
+if (k == 'd'){Move(7,0,0)};
+}
+function d(){
+a = document.getElementById("myCanvas");
+var ct = a.getContext("2d");
+ct.clearRect(0,0,document.getElementById("myCanvas").width,document.getElementById("myCanvas").height);
+DrawCube(17,X,Y,Z,'#000000');
+DrawCube(17,DB.x,DB.y,DB.z,'#ff0000');
+DrawCube(17,DB2.x,DB2.y,DB2.z,'#ff0000');
+DB.x=DB.x-4;
+DB2.x=DB2.x-5;
+if (DB.x<-360){DB = new DangerBlock(300*Math.random()-210); score+=1};
+if (DB2.x<-360){DB2 = new DangerBlock(300*Math.random()-210); score+=1};
+if (Collide(DB)){Over()};
+if (Collide(DB2)){Over()};
+//LR04569489
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+ctx.font = "15px Arial";
+ctx.fillText(score,40,50); 
+};
+function u(){
+started = setInterval(d,20)
+}
+function Prj(A){
+var ex = 320*A[0]/(320+A[1])+100;
+var wi = 320*A[2]/(320+A[1])+200;
+return([ex,wi])
+};
+function DrawCube(l,x,y,z,color){
+c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+ctx.strokeStyle = color;
+//Top Square
+ctx.beginPath();
+ctx.moveTo(Prj([x-l,y-l,z+l])[0],Prj([x-l,y-l,z+l])[1]);
+ctx.lineTo(Prj([x-l,y+l,z+l])[0],Prj([x-l,y+l,z+l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x-l,y+l,z+l])[0],Prj([x-l,y+l,z+l])[1]);
+ctx.lineTo(Prj([x+l,y+l,z+l])[0],Prj([x+l,y+l,z+l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x+l,y+l,z+l])[0],Prj([x+l,y+l,z+l])[1]);
+ctx.lineTo(Prj([x+l,y-l,z+l])[0],Prj([x+l,y-l,z+l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x+l,y-l,z+l])[0],Prj([x+l,y-l,z+l])[1]);
+ctx.lineTo(Prj([x-l,y-l,z+l])[0],Prj([x-l,y-l,z+l])[1]);
+ctx.stroke();
+//Bottom Square
+ctx.beginPath();
+ctx.moveTo(Prj([x-l,y-l,z-l])[0],Prj([x-l,y-l,z-l])[1]);
+ctx.lineTo(Prj([x-l,y+l,z-l])[0],Prj([x-l,y+l,z-l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x-l,y+l,z-l])[0],Prj([x-l,y+l,z-l])[1]);
+ctx.lineTo(Prj([x+l,y+l,z-l])[0],Prj([x+l,y+l,z-l])[1]);
+ctx.stroke();//LR04569489
+
+ctx.beginPath();
+ctx.moveTo(Prj([x+l,y+l,z-l])[0],Prj([x+l,y+l,z-l])[1]);
+ctx.lineTo(Prj([x+l,y-l,z-l])[0],Prj([x+l,y-l,z-l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x+l,y-l,z-l])[0],Prj([x+l,y-l,z-l])[1]);
+ctx.lineTo(Prj([x-l,y-l,z-l])[0],Prj([x-l,y-l,z-l])[1]);
+ctx.stroke();
+//Sides
+ctx.beginPath();
+ctx.moveTo(Prj([x-l,y-l,z-l])[0],Prj([x-l,y-l,z-l])[1]);
+ctx.lineTo(Prj([x-l,y-l,z+l])[0],Prj([x-l,y-l,z+l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x+l,y-l,z-l])[0],Prj([x+l,y-l,z-l])[1]);
+ctx.lineTo(Prj([x+l,y-l,z+l])[0],Prj([x+l,y-l,z+l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x+l,y+l,z-l])[0],Prj([x+l,y+l,z-l])[1]);
+ctx.lineTo(Prj([x+l,y+l,z+l])[0],Prj([x+l,y+l,z+l])[1]);
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(Prj([x-l,y+l,z-l])[0],Prj([x-l,y+l,z-l])[1]);
+ctx.lineTo(Prj([x-l,y+l,z+l])[0],Prj([x-l,y+l,z+l])[1]);
+ctx.stroke();
+}
+function DangerBlock(z){
+ this.x = 340;
+ this.y = 0;
+ this.z = z;
+}
+function Collide(Ob){
+var ret = false;
+var myCubeX = [X-17,X+17];
+var myCubeZ = [Z-17,Z+17];
+var otherCubeX=[Ob.x-17,Ob.x+17];
+var otherCubeZ = [Ob.z-17,Ob.z+17];
+if (myCubeX[0]<otherCubeX[1] && myCubeX[0]>otherCubeX[0] && myCubeZ[0]<otherCubeZ[1] && myCubeZ[0]>otherCubeZ[0]){ret = true};
+if (myCubeX[1]<otherCubeX[1] && myCubeX[1]>otherCubeX[0] && myCubeZ[0]<otherCubeZ[1] && myCubeZ[0]>otherCubeZ[0]){ret = true};
+if (myCubeX[0]<otherCubeX[1] && myCubeX[0]>otherCubeX[0] && myCubeZ[1]<otherCubeZ[1] && myCubeZ[1]>otherCubeZ[0]){ret = true};
+if (myCubeX[1]<otherCubeX[1] && myCubeX[1]>otherCubeX[0] && myCubeZ[1]<otherCubeZ[1] && myCubeZ[1]>otherCubeZ[0]){ret = true};
+return(ret);
+}
+function Over(){
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+ctx.font = "30px Arial";
+ctx.fillText("Game Over",10,50); 
+clearInterval(started);
+}
+</script> 
+<input type="button" onclick='if (started == 0){u()} else location.reload();' onkeypress='KeyMove(event.key)' value="start">
+</body>
+<p>
+Use W,A,S,D to move to move the black cube out of the way of the red ones
+</p>
+</html>
